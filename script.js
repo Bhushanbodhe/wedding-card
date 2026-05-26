@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         weddingDate: '2026-06-23',
         weddingTime: '10:40',
         weddingVenue: 'संत गजानन सभागृह, दहेगाव रंगारी, नागपूर',
-        mapsUrl: 'https://maps.app.goo.gl/k7CdHMh6KJ3fBtMP7?g_st=aw',
+        mapsUrl: 'https://www.google.com/maps/search/?api=1&query=%E0%A4%B8%E0%A4%A8%E0%A5%8D%E0%A4%A4+%E0%A4%97%E0%A4%9C%E0%A4%BE%E0%A4%A8%E0%A4%A8+%E0%A4%B8%E0%A4%AD%E0%A4%BE%E0%A4%97%E0%A5%82%E0%A4%B9+%E0%A4%A6%E0%A4%B9%E0%A5%87%E0%A4%97%E0%A4%BE%E0%A4%B5+%E0%A4%B0%E0%A4%82%E0%A4%97%E0%A4%BE%E0%A4%B0%E0%A5%80+%E0%A4%A8%E0%A4%BE%E0%A4%97%E0%A4%AA%E0%A5%82%E0%A4%B0',
         enablePetals: true
     };
 
