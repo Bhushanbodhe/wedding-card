@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation</title>
+    <meta name="description" content="You are cordially invited to celebrate our wedding. View details, RSVP, and leave your blessings.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-crimson">
+
+    <!-- Falling Petals Canvas -->
+    <canvas id="petals-canvas"></canvas>
+
+    <!-- Music Player Controller -->
+    <div class="music-controller">
+        <button id="music-toggle-btn" class="music-btn" title="Toggle Music" aria-label="Toggle Music">
+            <i class="fas fa-music"></i>
+            <span class="music-notes">
+                <span>🎵</span><span>🎶</span><span>♩</span>
+            </span>
+        </button>
+        <div class="music-details-bubble">
+            <label style="font-size:10px;font-weight:600;color:#7d0a22;text-transform:uppercase;margin-bottom:4px;display:block;">🎵 Paste YouTube Song Link</label>
+            <input type="text" id="youtube-url-input" placeholder="https://youtu.be/... or youtube.com/watch?v=..." style="width:100%;padding:6px 8px;border:1px solid #d4af37;border-radius:6px;font-size:11px;outline:none;">
+            <button id="yt-play-btn" style="margin-top:6px;width:100%;padding:6px;background:#7d0a22;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;">▶ Load & Play</button>
+            <p style="font-size:9px;color:#888;margin-top:4px;line-height:1.3;">Tip: Paste any YouTube video link — it plays as background audio invisibly.</p>
+        </div>
+    </div>
+
+    <!-- Hidden YouTube IFrame Player container -->
+    <div id="yt-player-wrapper" style="position:fixed;bottom:-10px;left:-10px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;overflow:hidden;">
+        <div id="yt-player"></div>
+    </div>
+
+    <!-- YouTube IFrame API Script (loads async) -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- Invitation Envelope / Gatefold Cover -->
+    <div id="invitation-cover" class="cover-wrapper">
+        <div class="gatefold-door door-left">
+            <div class="jaali-pattern"></div>
+        </div>
+        <div class="gatefold-door door-right">
+            <div class="jaali-pattern"></div>
+        </div>
+        
+        <!-- Central Card Emblem Plate (floats in middle of the split) -->
+        <div class="emblem-container" id="cover-emblem">
+            <div class="emblem-shadow"></div>
+            <div class="emblem-card-frame">
+                <!-- Arch frame from the image -->
+                <div class="arch-frame">
+                    <div class="floral-background"></div>
+                    <div class="ganesha-medallion">
+                        <img src="assets/ganesha.png" alt="Lord Ganesha" class="ganesha-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3201/3201083.png'">
+                    </div>
+                </div>
+            </div>
+            <!-- Interactive Open Button (Wax Seal Style) -->
+            <button id="open-card-btn" class="open-btn">
+                <div class="seal-inner">
+                    <span class="seal-text">OPEN</span>
+                    <i class="fas fa-envelope-open"></i>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Invitation Booklet Container -->
+    <main id="invitation-main" class="invitation-container hidden">
+
+        <!-- Main Card Presentation Frame -->
+        <div class="card-viewer-wrap">
+            <div class="card-body-frame">
+                <!-- Outer Jaali Pattern Inner Frame -->
+                <div class="inner-jaali-border">
+                    <!-- Navigation Slides Container -->
+                    <div class="slides-container">
+                        
+                        <!-- SLIDE 1: Welcome & Introduction -->
+                        <section class="slide-section active" id="slide-welcome" data-slide-index="0">
+                            <div class="slide-content-layout welcome-slide">
+                                <div class="top-ganesha">
+                                    <img src="assets/ganesha.png" alt="Ganesha Icon" class="mini-ganesha" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3201/3201083.png'">
+                                </div>
+                                <div class="shloka-box">
+                                    <p id="display-shloka" class="shloka-text">प्रथम पुजावा श्री गणपती । धन्य ती भारतीय संस्कृति ।<br>ज्ञानेश्वराने चालविल्या भिंती । अर्जुनाच्या रथावर श्री कृष्ण सारथी ।<br>तोच जुळवितो नाती-गोती । या मंगल प्रसंगी यावे आशीर्वाद देण्यासाठी...</p>
+                                </div>
+                                <div class="invitation-text-header">
+                                    <span class="sub-header-gold">श्री गणेशाय नमः</span>
+                                    <span class="invite-title">Wedding Invitation</span>
+                                    <p class="invite-msg">Together with their families, you are cordially invited to celebrate the union of love, tradition, and togetherness as we embark on our lifelong journey.</p>
+                                </div>
+                                
+                                <div class="couple-names-display">
+                                    <h1 class="couple-names">
+                                        <span id="display-groom" class="name-span text-groom">Chintaman</span>
+                                        <span class="and-symbol">&</span>
+                                        <span id="display-bride" class="name-span text-bride">Sonal</span>
+                                    </h1>
+                                </div>
+                                
+                                <div class="date-summary-gold">
+                                    <p id="display-date-summary" class="gold-summary-text">Tuesday, June 23, 2026</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SLIDE 2: The Couple (Bride & Groom) -->
+                        <section class="slide-section" id="slide-couple" data-slide-index="1">
+                            <div class="slide-content-layout couple-slide">
+                                <h2 class="slide-header"><i class="fas fa-heart"></i> The Couple</h2>
+                                <div class="couple-details-container">
+                                    <div class="couple-portrait">
+                                        <img src="assets/bride_groom.png" alt="Bride and Groom Illustration" class="couple-img" onerror="this.src='https://cdn.pixabay.com/photo/2021/04/10/16/09/wedding-couple-6167448_1280.png'">
+                                    </div>
+                                    <div class="couple-bios">
+                                        <div class="bio-card groom-bio">
+                                            <h3 class="bio-name"><span class="label">Groom:</span> <span id="display-groom-name">Chintaman</span></h3>
+                                            <p class="parent-names" id="display-groom-parents-text">Son of गं.भा. जिजाबाई व स्व. महादेवजी चिरखे</p>
+                                            <p class="bio-text">A dedicated individual from the Chirkhe family, stepping forward with hope, love, and respect into a beautiful lifelong partnership.</p>
+                                        </div>
+                                        <div class="bio-divider">
+                                            <div class="heart-pulse"><i class="fas fa-heart"></i></div>
+                                        </div>
+                                        <div class="bio-card bride-bio">
+                                            <h3 class="bio-name"><span class="label">Bride:</span> <span id="display-bride-name">Sonal</span></h3>
+                                            <p class="parent-names" id="display-bride-parents-text">Daughter of सौ. संगीताबाई व श्री. दिलदारजी मोंढे</p>
+                                            <p class="bio-text">A grace-filled daughter of the Mondhe family, ready to embark on a beautiful journey of shared dreams and everlasting companionship.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SLIDE 3: Events Timeline -->
+                        <section class="slide-section" id="slide-events" data-slide-index="2">
+                            <div class="slide-content-layout events-slide">
+                                <h2 class="slide-header"><i class="fas fa-calendar-alt"></i> Auspicious Ceremonies</h2>
+                                
+                                <!-- Countdown Timer -->
+                                <div class="countdown-widget">
+                                    <p class="countdown-label">The Auspicious Muhurat Begins In:</p>
+                                    <div class="countdown-timer" id="wedding-countdown">
+                                        <div class="time-block"><span id="days">00</span><label>Days</label></div>
+                                        <div class="time-block"><span id="hours">00</span><label>Hours</label></div>
+                                        <div class="time-block"><span id="minutes">00</span><label>Mins</label></div>
+                                        <div class="time-block"><span id="seconds">00</span><label>Secs</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="events-timeline">
+                                    <!-- Event Card 1: Mandap Pujan -->
+                                    <div class="event-card">
+                                        <div class="event-icon"><i class="fas fa-home"></i></div>
+                                        <div class="event-info">
+                                            <h4>Mandap Pujan (मंडप पूजन)</h4>
+                                            <p class="event-time"><i class="far fa-clock"></i> Sunday, Jun 21, 2026</p>
+                                            <p class="event-desc">Auspicious worship of the mandap structures to request divine blessings for the ceremony.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Card 2: Haldi Ceremony -->
+                                    <div class="event-card">
+                                        <div class="event-icon"><i class="fas fa-seedling"></i></div>
+                                        <div class="event-info">
+                                            <h4>Haldi Ceremony (हळदी समारंभ)</h4>
+                                            <p class="event-time"><i class="far fa-clock"></i> Monday, Jun 22, 2026</p>
+                                            <p class="event-desc">Bathing the couple in turmeric paste and love to prepare them for the sacred wedding day.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Card 3: Wedding Muhurat (Main Event) -->
+                                    <div class="event-card featured-event">
+                                        <div class="event-icon"><i class="fas fa-ring"></i></div>
+                                        <div class="event-info">
+                                            <h4>Wedding Ceremony (Hastamelap)</h4>
+                                            <p class="event-time"><i class="far fa-clock"></i> <span id="display-wedding-time">10:40 AM</span> | <span id="display-wedding-date">Jun 23, 2026</span></p>
+                                            <p class="event-venue-text"><i class="fas fa-map-marker-alt"></i> <span id="display-wedding-venue">संत गजानन सभागृह, दहेगाव रंगारी, नागपूर</span></p>
+                                            <a id="display-wedding-maps" href="https://maps.app.goo.gl/k7CdHMh6KJ3fBtMP7?g_st=aw" target="_blank" class="map-btn-gold"><i class="fas fa-directions"></i> Get Directions</a>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SLIDE 4: Blessings Wall -->
+                        <section class="slide-section" id="slide-wishes" data-slide-index="4">
+                            <div class="slide-content-layout wishes-slide">
+                                <h2 class="slide-header"><i class="fas fa-comments"></i> Blessings Wall</h2>
+                                <p class="wishes-sub">Leave a warm message or blessing for the beautiful couple to cherish forever.</p>
+                                
+                                <div class="wishes-container">
+                                    <!-- Leave Blessing Form -->
+                                    <div class="blessing-form">
+                                        <div class="form-group-custom">
+                                            <input type="text" id="blessing-author" placeholder="Your Name" required>
+                                        </div>
+                                        <div class="form-group-custom">
+                                            <textarea id="blessing-message" rows="3" placeholder="Write your blessing or message here..." required></textarea>
+                                        </div>
+                                        
+                                        <!-- Interactive card designs -->
+                                        <div class="card-design-selector">
+                                            <span>Card Style:</span>
+                                            <div class="design-options">
+                                                <button type="button" class="design-btn design-gold active" data-style="gold-bg" title="Golden Frame"></button>
+                                                <button type="button" class="design-btn design-floral" data-style="floral-bg" title="Floral Motif"></button>
+                                                <button type="button" class="design-btn design-minimal" data-style="minimal-bg" title="Elegant Minimalist"></button>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" id="submit-blessing-btn" class="submit-blessing-btn">Post Blessing</button>
+                                    </div>
+
+                                    <!-- Scrollable wishes board -->
+                                    <div class="blessings-board-wrapper">
+                                        <div id="blessings-board" class="blessings-board">
+                                            <!-- Dynamic items go here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slides Navigation Footer Controls -->
+            <nav class="invitation-nav">
+                <button id="prev-slide-btn" class="nav-arrow-btn" aria-label="Previous Slide">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="slide-dots" id="navigation-dots">
+                    <span class="slide-dot active" data-slide-target="0" title="Invitation"></span>
+                    <span class="slide-dot" data-slide-target="1" title="The Couple"></span>
+                    <span class="slide-dot" data-slide-target="2" title="Events"></span>
+                    <span class="slide-dot" data-slide-target="3" title="Blessings Wall"></span>
+                </div>
+                <button id="next-slide-btn" class="nav-arrow-btn" aria-label="Next Slide">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </nav>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
